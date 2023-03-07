@@ -49,7 +49,7 @@ python manage.py migrate
 6. createsuperuser
 
 ```bash
-python manage.py createsuperuser
+python manage.py createsuperuser --email "YOUR_EMAIL" --username "YOUR_USERNAME"
 ```
 
 7. startapp
