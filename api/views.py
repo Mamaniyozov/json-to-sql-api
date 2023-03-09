@@ -34,3 +34,25 @@ def add_phone(request:HttpRequest):
 
         return JsonResponse({'result':data})
     return JsonResponse({})
+
+def get_all_product(request:HttpRequest):
+    if request.method=='GET':
+        # Get all the smartphone objects
+        phones = Smartphone.objects.all()
+        reslut = {
+            'result':[]
+        }
+        # Loop through the objects and append them to the result dictionary
+        for phone in phones:
+            reslut['result'].append({
+                'id':phone.id,
+                'price':phone.price,
+                'img_url':phone.img_url,
+                'color':phone.color,
+                'ram':phone.ram,
+                'memory':phone.memory,
+                'name':phone.name,
+                'model':phone.model
+            })
+
+        return JsonResponse(reslut)
