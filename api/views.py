@@ -11,6 +11,7 @@ def add_phone(request:HttpRequest):
         # Convert the data to a dictionary
         data = json.loads(data)
         price = data.get('price')
+      
         img_url = data.get('img_url')
         color = data.get('color')
         ram = data.get('ram')
