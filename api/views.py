@@ -38,7 +38,7 @@ def add_phone(request:HttpRequest):
 def get_all_product(request:HttpRequest):
     if request.method=='GET':
         # Get all the smartphone objects
-        phones = Smartphone.objects.filter(model='Apple')
+        phones = Smartphone.objects.all()
         reslut = {
             'result':{
                 
@@ -56,7 +56,55 @@ def get_all_product(request:HttpRequest):
                 'ram':phone.ram,
                 'memory':phone.memory,
                 'name':phone.name,
+                'created_at':phone.created_at,
+                'updated_at':phone.updated_at,
                 
             })
 
-        return JsonResponse(reslut)
+    return JsonResponse(reslut)
+    
+def get_product_by_model(request:HttpRequest,model):
+    if request.method=='GET':
+        # Get all the smartphone objects
+        phones = Smartphone.objects.filter(model__contains=model)
+        reslut = {
+            'model':model,
+            'result':[]
+        }
+        # Loop through the objects and append them to the result dictionary
+        for phone in phones:
+            reslut['result'].append({          
+                'id':phone.id,
+                'price':phone.price,
+                'img_url':phone.img_url,
+                'color':phone.color,
+                'ram':phone.ram,
+                'memory':phone.memory,
+                'name':phone.name,
+                'created_at':phone.created_at,
+                'updated_at':phone.updated_at,
+                
+            })
+    return JsonResponse(reslut)
+                             
+
+# Update a product
+def update_price(request:HttpRequest,pk):
+    if request.method=='GET':
+        # Get the smartphone object
+        phone = Smartphone.objects.get(id=pk)
+        # Get the price from the request
+        price = phone.price+10
+        # Update the price
+        phone.price = price
+        phone.save()
+        
+
+    return JsonResponse({
+        'name':phone.name,
+        'price':phone.price,
+        'model':phone.model,
+        'color':phone.color,
+        'ram':phone.ram,
+    })
+
