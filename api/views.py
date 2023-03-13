@@ -1,25 +1,45 @@
 from django.shortcuts import render
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse,HttpRequest
 # Import the Smartphone model
 from .models import Smartphone
 import json
 # Create your views here.
-def add_phone(request:HttpRequest):
-    if request.method=='POST':
-        r = request.body
-        data = r.decode()
-        # Convert the data to a dictionary
-        data = json.loads(data)
-        price = data.get('price')
-      
-        img_url = data.get('img_url')
-        color = data.get('color')
-        ram = data.get('ram')
-        memory = data.get('memory')
-        name = data.get('name')
-        model = data.get('model')
-
+def add_product(reqeust: HttpRequest) -> JsonResponse:
+    """add new product to database"""
+    if reqeust.method == 'POST':
+        # get body from request
+        body = reqeust.body
+        # get body data
+        decoded = body.decode()
+        # data to dict
+        data = json.loads(decoded)
+        # get all properties
+        price = data.get('price', False)
+        img_url = data.get('img_url', False)
+        color = data.get('color', False)
+        ram = data.get('ram', False)
+        memory = data.get('memory', False)
+        name = data.get('name', False)
+        model = data.get('model', False)
         # Create a new smartphone object
+          # check all properties is valid
+        if price == False:
+            return JsonResponse({"status": "price field is required."})
+        if img_url == False:
+            return JsonResponse({"status": "img_url field is required."})
+        if color == False:
+            return JsonResponse({"status": "color field is required."})
+        if ram == False:
+            return JsonResponse({"status": "ram field is required."})
+        if memory == False:
+            return JsonResponse({"status": "memory field is required."})
+        if name == False:
+            return JsonResponse({"status": "name field is required."})
+        if model == False:
+            return JsonResponse({"status": "model field is required."})
+
+        # create a inctance of SmartPhone 
         phone = Smartphone()
         phone.price = price
         phone.img_url=img_url
@@ -108,3 +128,25 @@ def update_price(request:HttpRequest,pk):
         'ram':phone.ram,
     })
 
+def cost(reqeust:HttpRequest):
+    if reqeust.method == "GET":
+        try:
+            # get product from database by 
+                data = reqeust.GET
+                p = data['p']
+                product = Smartphone.objects.filter(price__lte = p)
+
+                json_data = []
+                for i in product.all():
+                    json_data.append({
+                        "price": i.price,
+                        "img_url": i.img_url,
+                        "color": i.color,
+                        "ram": i.ram,
+                        "memory": i.memory,
+                        "name": i.name,
+                        "model": i.model
+                    })
+                return JsonResponse({"result":json_data})
+        except ObjectDoesNotExist:
+            return JsonResponse({"status": "object doesn't exist"})

@@ -18,9 +18,10 @@ from django.urls import path
 from api import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/add',views.add_phone),
+    path('add/',views.add_product),
     path('api/get/model/<str:model>',views.get_product_by_model),
     path('api/get',views.get_all_product),
     path('api/update/price/<int:pk>',views.update_price),
+    path('self_cost',views.cost)
 
 ]
