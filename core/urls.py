@@ -22,6 +22,6 @@ urlpatterns = [
     path('api/get/model/<str:model>',views.get_product_by_model),
     path('api/get',views.get_all_product),
     path('api/update/price/<int:pk>',views.update_price),
-    path('self_cost',views.cost)
+    path('self_cost/',views.cost)
 
 ]
